@@ -1,31 +1,27 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 const modalRoot = document.querySelector('#modal-root');
 
 export const Modal = ({ children, onClose }) => {
-  useEffect(() => {
-    const handleKeyDown = event => {
-      if (event.code === 'Escape') {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  },[handleKeyDown]);
+  
 
-  const handleKeyDown = event => {
+  const handleKeyDown = useCallback(event => {
     if (event.code === 'Escape') {
       onClose();
     }
-  };
+  }, [onClose]);
 
   const handleBackdrop = event => {
     if (event.target === event.currentTarget) {
       onClose();
     }
   };
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   return createPortal(
     <div>
